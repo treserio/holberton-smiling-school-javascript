@@ -294,6 +294,34 @@ input[type=search]::placeholder {
     letter-spacing: 1px;
 }
 
+/* =============== Javascript Project Additions =============== */
+/* =============== Carousels =============== */
+
+.loader {
+    border: 10px solid #f3f3f3;
+    border-top: 10px solid #C271FF;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 2s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.carousel-inner .carousel-item-right.active,
+.carousel-inner .carousel-item-next {
+  transform: translateX(25%);
+}
+
+.carousel-inner .carousel-item-left.active,
+.carousel-inner .carousel-item-prev {
+  transform: translateX(-25%)
+}
+
 /* =============== mobile >= 1200 =============== */
 
 @media (min-width:1200px) {
