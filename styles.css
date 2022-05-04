@@ -312,15 +312,25 @@ input[type=search]::placeholder {
     100% { transform: rotate(360deg); }
 }
 
-.carousel-inner .carousel-item-right.active,
-.carousel-inner .carousel-item-next {
-  transform: translateX(25%);
+.pop-vids-4 .carousel-inner .carousel-item-right.active,
+.pop-vids-4 .carousel-inner .carousel-item-next {
+  transform: translateX(25%) !important;
 }
 
-.carousel-inner .carousel-item-left.active,
-.carousel-inner .carousel-item-prev {
-  transform: translateX(-25%)
+.pop-vids-4 .carousel-inner .carousel-item-left.active,
+.pop-vids-4 .carousel-inner .carousel-item-prev {
+  transform: translateX(-25%) !important;
 }
+
+.pop-vids-4 .carousel-inner .carousel-item-right,
+.pop-vids-4 .carousel-inner .carousel-item-left{
+  transform: translateX(0) !important;
+}
+
+/* slow transitinos to inspect */
+/* .carousel-inner > .carousel-item {
+    transition: 10s !important;
+} */
 
 /* =============== mobile >= 1200 =============== */
 
