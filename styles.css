@@ -322,8 +322,20 @@ input[type=search]::placeholder {
   transform: translateX(-25%) !important;
 }
 
+.pop-vids-2 .carousel-inner .carousel-item-right.active,
+.pop-vids-2 .carousel-inner .carousel-item-next {
+  transform: translateX(50%) !important;
+}
+
+.pop-vids-2 .carousel-inner .carousel-item-left.active,
+.pop-vids-2 .carousel-inner .carousel-item-prev {
+  transform: translateX(-50%) !important;
+}
+
 .pop-vids-4 .carousel-inner .carousel-item-right,
-.pop-vids-4 .carousel-inner .carousel-item-left{
+.pop-vids-4 .carousel-inner .carousel-item-left,
+.pop-vids-2 .carousel-inner .carousel-item-right,
+.pop-vids-2 .carousel-inner .carousel-item-left {
   transform: translateX(0) !important;
 }
 
