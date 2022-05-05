@@ -1,28 +1,42 @@
 // load comments from api
 $.get('https://smileschool-api.hbtn.info/quotes', (data) => {
-  console.log('cmntData', data);
+  // console.log('cmntData', data);
   const cmntList = [];
   for (let item of data) {
     cmntList.push(createCmnt(item));
   }
-  console.log(cmntList);
+  // console.log(cmntList);
   oneStepCaro_nItems(cmntList, 1, $('.comments .carousel-inner')[0]);
 })
   .done(() => { $('.comments .loader').hide(); });
 
 // load most popular videos from api
 $.get('https://smileschool-api.hbtn.info/popular-tutorials', (data) => {
-  // console.log('data', data);
+  // console.log('mostPopData', data);
   const cardList = [];
   for (let item of data) {
     cardList.push(createCard(item));
   }
-  console.log(cardList);
-  oneStepCaro_nItems(cardList, 4, $('.pop-vids-4 .carousel-inner')[0]);
-  oneStepCaro_nItems(cardList, 2, $('.pop-vids-2 .carousel-inner')[0]);
-  oneStepCaro_nItems(cardList, 1, $('.pop-vids-1 .carousel-inner')[0]);
+  // console.log(cardList);
+  oneStepCaro_nItems(cardList, 4, $('.most-pop .pop-vids-4 .carousel-inner')[0]);
+  oneStepCaro_nItems(cardList, 2, $('.most-pop .pop-vids-2 .carousel-inner')[0]);
+  oneStepCaro_nItems(cardList, 1, $('.most-pop .pop-vids-1 .carousel-inner')[0]);
 })
   .done(() => { $('.most-pop .loader').hide(); });
+
+// load latest videos from api
+$.get('https://smileschool-api.hbtn.info/latest-videos', (data) => {
+  console.log('latestData', data);
+  const cardList = [];
+  for (let item of data) {
+    cardList.push(createCard(item));
+  }
+  // console.log(cardList);
+  oneStepCaro_nItems(cardList, 4, $('.latest .pop-vids-4 .carousel-inner')[0]);
+  oneStepCaro_nItems(cardList, 2, $('.latest .pop-vids-2 .carousel-inner')[0]);
+  oneStepCaro_nItems(cardList, 1, $('.latest .pop-vids-1 .carousel-inner')[0]);
+})
+  .done(() => { $('.latest .loader').hide(); });
 
 function createCmnt(info) {
   const cmnt = $('<div class="d-flex flex-column flex-md-row justify-content-around justify-content-md-center align-items-center">')[0];
