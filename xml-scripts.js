@@ -5,10 +5,11 @@ window.onload = () => {
 function loadAllCarousels() {
   // load comments from api
   if ($('.comments .carousel-inner').length) {
-    $.get('https://smileschool-api.hbtn.info/quotes', (data) => {
+    $.get('https://smileschool-api.hbtn.info/xml/quotes', (data) => {
       // console.log('cmntData', data);
+      // console.log(data.childNodes[0]);
       const cmntList = [];
-      for (let item of data) {
+      for (let item of data.childNodes[0].childNodes) {
         cmntList.push(createCmnt(item));
       }
       // console.log(cmntList);
@@ -19,10 +20,11 @@ function loadAllCarousels() {
 
   // load most popular videos from api
   if ($('.most-pop .pop-vids-4 .carousel-inner').length) {
-    $.get('https://smileschool-api.hbtn.info/popular-tutorials', (data) => {
-      // console.log('mostPopData', data);
+    $.get('https://smileschool-api.hbtn.info/xml/popular-tutorials', (data) => {
+      console.log('mostPopData', data);
+      console.log(data.childNodes[0]);
       const cardList = [];
-      for (let item of data) {
+      for (let item of data.childNodes[0].childNodes) {
         cardList.push(createCard(item));
       }
       // console.log(cardList);
@@ -35,10 +37,10 @@ function loadAllCarousels() {
 
   // load latest videos from api
   if ($('.latest .pop-vids-4 .carousel-inner').length) {
-    $.get('https://smileschool-api.hbtn.info/latest-videos', (data) => {
+    $.get('https://smileschool-api.hbtn.info/xml/latest-videos', (data) => {
       // console.log('latestData', data);
       const cardList = [];
-      for (let item of data) {
+      for (let item of data.childNodes[0].childNodes) {
         cardList.push(createCard(item));
       }
       // console.log(cardList);
@@ -52,6 +54,7 @@ function loadAllCarousels() {
   // load courses section from api
   if ($('.results .row').length) {
     getCourses($('.results .row'));
+    // set the form submittal to run correctly
     $('form.container').submit((e) => {
       e.preventDefault();
       getCourses($('.results .row'));
@@ -60,41 +63,46 @@ function loadAllCarousels() {
 }
 
 function createCmnt(info) {
+  // console.log('createCmnt', info);
+  // console.log('pic_url', info.childNodes[0].textContent);
   const cmnt = $('<div class="d-flex flex-column flex-md-row justify-content-around justify-content-md-center align-items-center">')[0];
-  let cmntContent = `<img class="img-fluid rounded-circle mb-4 mb-md-0" src="${info.pic_url}" alt="profile_5" width="160px" height="160px">
+  let cmntContent = `<img class="img-fluid rounded-circle mb-4 mb-md-0" src="${info.childNodes[0].textContent}" alt="profile_5" width="160px" height="160px">
       <div class="comment-text ml-md-5 mr-md-0 flex-column">
-        <div>« ${info.text}</div>
-        <h4 class="mt-3 mb-0">${info.name}</h4>
-        <i>${info.title}</i>
+        <div>« ${info.childNodes[3].textContent}</div>
+        <h4 class="mt-3 mb-0">${info.childNodes[1].textContent}</h4>
+        <i>${info.childNodes[2].textContent}</i>
       </div>`;
   $(cmnt).append(cmntContent);
   return cmnt;
 }
 
 function createCard(info) {
+  // console.log('createCard', info);
+  // console.log(info.childNodes[0].textContent);
   const card = document.createElement('div');
   $(card).addClass('card border-0');
   let cardContent = `<div class="card-header">
-      <img src="${info.thumb_url}" width="255" height="154">
+      <img src="${info.childNodes[2].textContent}" width="255" height="154">
       <img class="play-btn" src="images/play.png" width="64" height="64">
     </div>
     <div class="card-body">
-      <h5 class="card-title mt-3"><b>${info.title}</b></h5>
-      <small class="card-text">${info['sub-title']}</small>
+      <h5 class="card-title mt-3"><b>${info.childNodes[0].textContent}</b></h5>
+      <small class="card-text">${info.childNodes[1].textContent}</small>
       <div class="d-flex flex-row align-items-center mt-3">
-        <img class="rounded-circle" src="${info.author_pic_url}" width="30" height="30">
-        <small class="text-purple ml-2"><b>${info.author}</b></small>
+        <img class="rounded-circle" src="${info.childNodes[4].textContent}" width="30" height="30">
+        <small class="text-purple ml-2"><b>${info.childNodes[3].textContent}</b></small>
       </div>
       <div class="d-flex flex-row align-items-center justify-content-between mt-2">
         <div class="d-flex justify-content-between align-items-center w-50">`;
-  for (var i = 0; i < info.star; ++i) {
+  // console.log('stars', info.attributes[1].value);
+  for (var i = 0; i < info.attributes[1].value; ++i) {
     cardContent += `<img src="images/star_on.png" width="15" height="15">`;
   }
   while(i++ < 5) {
     cardContent += `<img src="images/star_off.png" width="15" height="15">`;
   }
   cardContent += `</div>
-        <small class="text-purple"><b>${info.duration}</b></small>
+        <small class="text-purple"><b>${info.childNodes[5].textContent}</b></small>
       </div>
     </div>`;
   $(card).append(cardContent);
@@ -139,7 +147,7 @@ function getCourses(target) {
   let sortBy = $('#exampleFormControlSelect1').val();
   // console.log('key:', keywords, 'top:', topic, 'sort:', sortBy);
   // set base api url
-  let apiUrl = 'https://smileschool-api.hbtn.info/courses?'
+  let apiUrl = 'https://smileschool-api.hbtn.info/xml/courses?'
   // fill with search parameters if present
   if (keywords) {
     apiUrl += `&q=${keywords}`;
@@ -153,8 +161,9 @@ function getCourses(target) {
   // console.log(apiUrl);
   $.get(apiUrl, (data) => {
       // console.log('coursesData', data);
+      // console.log(data.childNodes[0].childNodes[5].childNodes);
       const cardList = [];
-      for (let item of data.courses) {
+      for (let item of data.childNodes[0].childNodes[5].childNodes) {
         cardList.push(createCard(item));
       }
       // console.log('coursesList', cardList);
@@ -162,15 +171,15 @@ function getCourses(target) {
       let sorts = $('.form-control#exampleFormControlSelect1')[0];
       // check if the options are already there, if not fill them up!
       if (!topics.childElementCount) {
-        // console.log('firing topics');
-        for (let option of data.topics) {
-          $(topics).append(createOption(option));
+        // console.log('topics', data.childNodes[0].childNodes[0].childNodes);
+        for (let option of data.childNodes[0].childNodes[0].childNodes) {
+          $(topics).append(createOption(option.textContent));
         }
       }
       if (!sorts.childElementCount) {
-        // console.log('firing sorts');
-        for (let option of data.sorts) {
-          $(sorts).append(createOption(option));
+        // console.log('sorts', data.childNodes[0].childNodes[2].childNodes);
+        for (let option of data.childNodes[0].childNodes[2].childNodes) {
+          $(sorts).append(createOption(option.textContent));
         }
       }
       // add event listeners
