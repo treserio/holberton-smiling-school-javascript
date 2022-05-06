@@ -1,42 +1,59 @@
-// load comments from api
-$.get('https://smileschool-api.hbtn.info/quotes', (data) => {
-  // console.log('cmntData', data);
-  const cmntList = [];
-  for (let item of data) {
-    cmntList.push(createCmnt(item));
-  }
-  // console.log(cmntList);
-  oneStepCaro_nItems(cmntList, 1, $('.comments .carousel-inner')[0]);
-})
-  .done(() => { $('.comments .loader').hide(); });
+window.onload = () => {
+  loadAllCarousels();
+}
 
-// load most popular videos from api
-$.get('https://smileschool-api.hbtn.info/popular-tutorials', (data) => {
-  // console.log('mostPopData', data);
-  const cardList = [];
-  for (let item of data) {
-    cardList.push(createCard(item));
+function loadAllCarousels() {
+  // load comments from api
+  if ($('.comments .carousel-inner').length) {
+    $.get('https://smileschool-api.hbtn.info/quotes', (data) => {
+      // console.log('cmntData', data);
+      const cmntList = [];
+      for (let item of data) {
+        cmntList.push(createCmnt(item));
+      }
+      // console.log(cmntList);
+      oneStepCaro_nItems(cmntList, 1, $('.comments .carousel-inner'));
+    })
+      .done(() => { $('.comments .loader').hide(); });
   }
-  // console.log(cardList);
-  oneStepCaro_nItems(cardList, 4, $('.most-pop .pop-vids-4 .carousel-inner')[0]);
-  oneStepCaro_nItems(cardList, 2, $('.most-pop .pop-vids-2 .carousel-inner')[0]);
-  oneStepCaro_nItems(cardList, 1, $('.most-pop .pop-vids-1 .carousel-inner')[0]);
-})
-  .done(() => { $('.most-pop .loader').hide(); });
 
-// load latest videos from api
-$.get('https://smileschool-api.hbtn.info/latest-videos', (data) => {
-  console.log('latestData', data);
-  const cardList = [];
-  for (let item of data) {
-    cardList.push(createCard(item));
+  // load most popular videos from api
+  if ($('.most-pop .pop-vids-4 .carousel-inner').length) {
+    $.get('https://smileschool-api.hbtn.info/popular-tutorials', (data) => {
+      // console.log('mostPopData', data);
+      const cardList = [];
+      for (let item of data) {
+        cardList.push(createCard(item));
+      }
+      // console.log(cardList);
+      oneStepCaro_nItems(cardList, 4, $('.most-pop .pop-vids-4 .carousel-inner'));
+      oneStepCaro_nItems(cardList, 2, $('.most-pop .pop-vids-2 .carousel-inner'));
+      oneStepCaro_nItems(cardList, 1, $('.most-pop .pop-vids-1 .carousel-inner'));
+    })
+      .done(() => { $('.most-pop .loader').hide(); });
   }
-  // console.log(cardList);
-  oneStepCaro_nItems(cardList, 4, $('.latest .pop-vids-4 .carousel-inner')[0]);
-  oneStepCaro_nItems(cardList, 2, $('.latest .pop-vids-2 .carousel-inner')[0]);
-  oneStepCaro_nItems(cardList, 1, $('.latest .pop-vids-1 .carousel-inner')[0]);
-})
-  .done(() => { $('.latest .loader').hide(); });
+
+  // load latest videos from api
+  if ($('.latest .pop-vids-4 .carousel-inner').length) {
+    $.get('https://smileschool-api.hbtn.info/latest-videos', (data) => {
+      // console.log('latestData', data);
+      const cardList = [];
+      for (let item of data) {
+        cardList.push(createCard(item));
+      }
+      // console.log(cardList);
+      oneStepCaro_nItems(cardList, 4, $('.latest .pop-vids-4 .carousel-inner'));
+      oneStepCaro_nItems(cardList, 2, $('.latest .pop-vids-2 .carousel-inner'));
+      oneStepCaro_nItems(cardList, 1, $('.latest .pop-vids-1 .carousel-inner'));
+    })
+      .done(() => { $('.latest .loader').hide(); });
+  }
+
+  // load courses section from api
+  if ($('.results .row').length) {
+    getCourses();
+  }
+}
 
 function createCmnt(info) {
   const cmnt = $('<div class="d-flex flex-column flex-md-row justify-content-around justify-content-md-center align-items-center">')[0];
@@ -80,6 +97,10 @@ function createCard(info) {
   return card;
 }
 
+function createOption(info) {
+  return $(`<option class="bg-white text-body" value="${info}">${capFirstLtr(info)}</option>`)[0];
+}
+
 function oneStepCaro_nItems(cardList, nItems, target) {
   // console.log('cardList', cardList);
   // console.log('nItems', nItems);
@@ -103,5 +124,60 @@ function oneStepCaro_nItems(cardList, nItems, target) {
   }
 }
 
+function getCourses() {
+  // grab all search parameters for api
+  let keywords = $('#searchInput').val();
+  let topic = $('#topicSelect').val();
+  let sortBy = $('#exampleFormControlSelect1').val();
+  console.log('key:', keywords, 'top:', topic, 'sort:', sortBy);
+  // set base api url
+  let apiUrl = 'https://smileschool-api.hbtn.info/courses?'
+  // fill with search parameters if present
+  if (keywords) {
+    apiUrl += `&q=${keywords}`;
+  }
+  if (topic) {
+    apiUrl += `&topic=${topic}`;
+  }
+  if (sortBy) {
+    apiUrl += `&sort=${sortBy}`;
+  }
+  console.log(apiUrl);
+  $.get(apiUrl, (data) => {
+      console.log('coursesData', data);
+      const cardList = [];
+      for (let item of data.courses) {
+        cardList.push(createCard(item));
+      }
+      // console.log('coursesList', cardList);
+      // check if the options are already there, if not fill them up!
+      if (!$('.form-control#topicSelect')[0].childElementCount) {
+        for (let option of data.topics) {
+          $('.form-control#topicSelect').append(createOption(option));
+        }
+      }
+      if (!$('.form-control#exampleFormControlSelect1')[0].childElementCount) {
+        for (let option of data.sorts) {
+          $('.form-control#exampleFormControlSelect1').append(createOption(option));
+        }
+      }
+      fillCourses(cardList, $('.results .row'));
+    })
+      .done(() => { $('.results .row .loader').hide(); });
+}
 
+function fillCourses(cardList, target) {
+  // console.log('cardList', cardList);
+  // console.log('target', target);
+  for (card of cardList) {
+    var wrapper = $('<div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center my-2">')[0];
+    wrapper.append(card);
+    target.append(wrapper.cloneNode(true));
+  }
+}
+
+function capFirstLtr(string) {
+  let words = string.split('_');
+  return words.map((word) => {return word[0].toUpperCase() + word.substring(1)}).join(" ");
+}
 
