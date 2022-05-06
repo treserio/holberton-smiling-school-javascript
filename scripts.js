@@ -72,8 +72,7 @@ function createCmnt(info) {
 }
 
 function createCard(info) {
-  const card = document.createElement('div');
-  $(card).addClass('card border-0');
+  const card = $('<div class="card border-0"></div>')[0];
   let cardContent = `<div class="card-header">
       <img src="${info.thumb_url}" width="255" height="154">
       <img class="play-btn" src="images/play.png" width="64" height="64">

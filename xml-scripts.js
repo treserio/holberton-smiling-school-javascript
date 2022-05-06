@@ -79,8 +79,7 @@ function createCmnt(info) {
 function createCard(info) {
   // console.log('createCard', info);
   // console.log(info.childNodes[0].textContent);
-  const card = document.createElement('div');
-  $(card).addClass('card border-0');
+  const card = $('<div class="card border-0"></div>')[0];
   let cardContent = `<div class="card-header">
       <img src="${info.childNodes[2].textContent}" width="255" height="154">
       <img class="play-btn" src="images/play.png" width="64" height="64">
